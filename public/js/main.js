@@ -1,92 +1,69 @@
 const deleteBtn = document.querySelectorAll('.del')
-const todoItem = document.querySelectorAll('.todoItem span')
-const todoComplete = document.querySelectorAll('.todoItem span.completed')
+const todoItem = document.querySelectorAll('span.not')
+const todoComplete = document.querySelectorAll('span.completed')
 
 Array.from(deleteBtn).forEach((el) => {
           el.addEventListener('click', deleteTodo)
 })
 
-
-
-
-// Update ediyoruz burada addeventlistener Update için event listener ile
 Array.from(todoItem).forEach((el) => {
           el.addEventListener('click', markComplete)
 })
 
-
-
-// Uncompleted 
 Array.from(todoComplete).forEach((el) => {
-          el.addEventListener('click', undo)
+          el.addEventListener('click', markInComplete)
 })
 
-
 async function deleteTodo() {
-
-          // We are gonna grab the text next to it
-          const todoText = this.parentNode.childNodes[1].innerText
+          const todoId = this.parentNode.dataset.id
           try {
-
-                    // We are fetching the database
-                    const response = await fetch('deleteTodo', {
-
-                              //Delete request
+                    const response = await fetch('todos/deleteTodo', {
                               method: 'delete',
-
-                              // Expect some Json
                               headers: { 'Content-type': 'application/json' },
-
-                              //  We can send it  body request to fect as well and rainbowunicorn property olarak atadık istedigimiz atayabiliriz. todoText'in içindeki textleri tıkladığımız that had to work deletede
-                              // body: Json.stringify ile we are sending request body
                               body: JSON.stringify({
-                                        'rainbowUnicorn': todoText
+                                        'todoIdFromJSFile': todoId
                               })
                     })
                     const data = await response.json()
                     console.log(data)
-                    location.reload() //  delete yaptğımız gibi sayfayı yeniliyoruz.
+                    location.reload()
           } catch (err) {
-                    console.log(err);
+                    console.log(err)
           }
 }
 
-
-// Update click up click on markcompleted function 
 async function markComplete() {
-          const todoText = this.parentNode.childNodes[1].innerText
+          const todoId = this.parentNode.dataset.id
           try {
-                    const response = await fetch('markComplete', {
+                    const response = await fetch('todos/markComplete', {
                               method: 'put',
                               headers: { 'Content-type': 'application/json' },
                               body: JSON.stringify({
-                                        'rainbowUnicorn': todoText
+                                        'todoIdFromJSFile': todoId
                               })
                     })
                     const data = await response.json()
-                    console.log(data);
+                    console.log(data)
                     location.reload()
           } catch (err) {
-                    console.log(err);
+                    console.log(err)
           }
 }
 
-
-// Uncompleted Update
-async function undo() {
-          const todoText = this.parentNode.childNodes[1].innerText
+async function markInComplete() {
+          const todoId = this.parentNode.dataset.id
           try {
-                    const response = await fetch('undo', {
+                    const response = await fetch('todos/markInComplete', {
                               method: 'put',
                               headers: { 'Content-type': 'application/json' },
                               body: JSON.stringify({
-                                        'rainbowUnicorn': todoText
+                                        'todoIdFromJSFile': todoId
                               })
                     })
                     const data = await response.json()
-                    console.log(data);
+                    console.log(data)
                     location.reload()
           } catch (err) {
-                    console.log(err);
+                    console.log(err)
           }
 }
