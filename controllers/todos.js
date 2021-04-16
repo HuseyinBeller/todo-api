@@ -2,17 +2,20 @@ const Todo = require('../models/Todo')
 
 module.exports = {
           getTodos: async (req, res) => {
+                    console.log(req.user)
                     try {
-                              const todoItems = await Todo.find()
-                              const itemsLeft = await Todo.countDocuments({ completed: false })
-                              res.render('todos.ejs', { todos: todoItems, left: itemsLeft })
+                              //Do we want to grab all the todos?
+                              const todoItems = await Todo.find({ microsoftId: req.user.microsoftId })
+                              //How can we grab our logged in users left to dos?
+                              const itemsLeft = await Todo.countDocuments({ microsoftId: req.user.microsoftId, completed: false })
+                              res.render('todos.ejs', { todos: todoItems, left: itemsLeft, user: req.user })
                     } catch (err) {
                               console.log(err)
                     }
           },
           createTodo: async (req, res) => {
                     try {
-                              await Todo.create({ todo: req.body.todoItem, completed: false })
+                              await Todo.create({ todo: req.body.todoItem, completed: false, microsoftId: req.user.microsoftId })
                               console.log('Todo has been added!')
                               res.redirect('/todos')
                     } catch (err) {
@@ -30,13 +33,13 @@ module.exports = {
                               console.log(err)
                     }
           },
-          markInComplete: async (req, res) => {
+          markIncomplete: async (req, res) => {
                     try {
                               await Todo.findOneAndUpdate({ _id: req.body.todoIdFromJSFile }, {
                                         completed: false
                               })
-                              console.log('Marked InComplete')
-                              res.json('Marked InComplete')
+                              console.log('Marked Incomplete')
+                              res.json('Marked Incomplete')
                     } catch (err) {
                               console.log(err)
                     }
